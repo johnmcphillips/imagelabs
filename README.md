@@ -1,0 +1,2 @@
+# imagelabs
+Thumbnail creation assignment
