@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: thumbnail-proc-api
 spec:
- ports:
-  - name: http
+  selector:
+    app: thumbnail-proc-api
+  ports:
+  - protocol: TCP
     port: 8080
     targetPort: 8080
- selector:
-  app: thumbnail-proc-api
- type: ClusterIP
+  type: ClusterIP
