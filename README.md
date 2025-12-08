@@ -20,9 +20,15 @@ User should be able to:
 
 ## Architecture
 
-## Setup
-
-### TODO - Automate setup process
+## Automated Setup
+This will run through Docker, Kind, and Helm installations
+```bash
+./start.sh
+```
+Clean up
+```kind
+kind delete cluster --name cogent
+```
 
 ## Manual Setup
 
@@ -44,14 +50,26 @@ kind create cluster --name cogent --config kind-config.yaml
 kind load docker-image thumbnail-proc:latest --name cogent
 ```
 
-- Install Helm chart
+- Install Thumbnail Processor Helm chart
 
 ```helm
 helm upgrade --install thumbnail-proc ./helm/thumbnail-proc
 ```
 
+- Install Prometheus + Grafana
+```helm
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm install monitoring prometheus-community/kube-prometheus-stack \
+  --namespace monitoring --create-namespace \
+  -f values-prometheus.yaml
+```
+
 - Port forward to svc
 
 ```kubectl
-kubectl port-forward svc/thumbnail-proc-api 8080:8080
+kubectl port-forward svc/thumbnail-proc-api 8080:8080 &
+kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80 &
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
 ```
