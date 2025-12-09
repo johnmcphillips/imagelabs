@@ -20,7 +20,6 @@ echo -e "\n"
 
 echo -e "${GREEN}Installing Prometheus + Grafana ...${NC}"
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add traefik https://traefik.github.io/charts
 helm repo update
 helm install monitoring prometheus-community/kube-prometheus-stack \
   --namespace monitoring --create-namespace \
