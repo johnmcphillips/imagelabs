@@ -1,9 +1,3 @@
-# grafana:
-#   grafana.ini:
-#     server:
-#       root_url: "%(protocol)s://%(domain)s/grafana"
-#       serve_from_sub_path: true
-
 kubeControllerManager:
   enabled: false
 

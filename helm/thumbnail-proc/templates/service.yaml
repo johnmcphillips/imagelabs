@@ -1,0 +1,42 @@
+{{- range $svc := .Values.services }}
+{{- if $svc.apiVersion }}
+apiVersion: {{ $svc.apiVersion }}
+{{- else }}
+apiVersion: v1
+{{- end }}
+{{- if $svc.kind }}
+kind: {{ $svc.kind }}
+{{- else }}
+kind: Service
+{{- end }}
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $svc.namespace }}
+  labels:
+    app: {{ $svc.name }}
+    {{- with $svc.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if $svc.selector }}
+  selector:
+  {{- toYaml $svc.selector | nindent 4 }}
+  namespaceSelector:
+  {{- toYaml $svc.namespaceSelector | nindent 4 }}
+  {{- else }}
+  selector:
+    app: {{ $svc.name }}
+  {{- end }}
+  {{- if $svc.endpoints }}
+  endpoints:
+  {{- toYaml $svc.endpoints | nindent 4 }}
+  {{- end }}
+  {{- if $svc.ports }}
+  ports:
+  {{- toYaml $svc.ports | nindent 4 }}
+  {{- end }}
+  {{- if $svc.type }}
+  type: {{ $svc.type }}
+  {{- end }}
+---
+{{- end }}

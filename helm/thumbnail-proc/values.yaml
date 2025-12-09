@@ -1,0 +1,92 @@
+deployments:
+  - name: thumbnail-proc
+    namespace: default
+    image: thumbnail-proc:latest
+    imagePullPolicy: IfNotPresent
+    replicas: 2
+    command:
+      - "python"
+      - "-m"
+      - "uvicorn"
+      - "main:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8080"
+      - "--limit-concurrency"
+      - "20"
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+    containerPort: 8080
+    env:
+      - name: ENVIRONMENT
+        value: "dev"
+      - name: REDIS_HOST
+        value: "redis"
+      - name: REDIS_PORT
+        value: "6379"
+    volumeMounts:
+      - name: thumbnail-proc
+        mountPath: /data
+    livenessProbe:
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 20
+    volumes:
+      - name: thumbnail-proc
+        emptyDir: {}
+
+  - name: redis
+    namespace: default
+    image: redis:7.0-alpine
+    imagePullPolicy: IfNotPresent
+    replicas: 1
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "100m"
+      requests:
+        memory: "128Mi"
+        cpu: "50m"
+    containerPort: 6379
+
+services:
+  - name: thumbnail-proc
+    namespace: default
+    type: ClusterIP
+    ports:
+      - name: http
+        protocol: TCP
+        port: 8080
+        targetPort: 8080
+
+  - name: redis
+    namespace: default
+    type: ClusterIP
+    ports:
+      - name: redis
+        port: 6379
+        targetPort: 6379
+
+  - name: thumbnail-monitoring
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    namespace: monitoring
+    labels:
+      release: monitoring
+    selector:
+      matchLabels:
+        app: thumbnail-proc
+    namespaceSelector:
+      matchNames:
+        - default
+    endpoints:
+      - port: http
+        path: /metrics
+        interval: 15s
