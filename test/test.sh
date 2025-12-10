@@ -10,11 +10,11 @@ JOBS=("./test/jobs.txt")
 touch "$JOBS"
 : > "$JOBS"
 
-MAX_JOBS=25
+MAX_JOBS=100
 COUNT=0
 
 random_sleep() {
-  awk 'BEGIN{srand(); printf "%.2f", 0.5 + rand()*0.9}'
+  awk 'BEGIN{srand(); printf "%.2f", 0.1 + rand()*0.9}'
 }
 
 while (( COUNT < MAX_JOBS )); do
@@ -42,6 +42,8 @@ while (( COUNT < MAX_JOBS )); do
         curl $URL"/$JOB_ID" \
         -H "Accept: application/json" \
         -o "${THUMBNAILS}/${JOB_ID}.jpg"
+
+        rm -f "${THUMBNAILS}/${JOB_ID}.jpg"  # Clean up
 
         sleep $(random_sleep)
         ((COUNT++))
