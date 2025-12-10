@@ -3,7 +3,7 @@ deployments:
     namespace: default
     image: thumbnail-proc:latest
     imagePullPolicy: IfNotPresent
-    replicas: 2
+    replicas: 1
     command:
       - "python"
       - "-m"
@@ -59,12 +59,12 @@ deployments:
 services:
   - name: thumbnail-proc
     namespace: default
-    type: ClusterIP
+    type: NodePort
     ports:
       - name: http
-        protocol: TCP
         port: 8080
         targetPort: 8080
+        nodePort: 30080
 
   - name: redis
     namespace: default

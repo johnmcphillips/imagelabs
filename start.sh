@@ -36,16 +36,18 @@ WATCH_PID=$!
 kubectl wait --for=condition=available --timeout=120s deployment --all -n default
 kill $WATCH_PID
 echo -e "\n"
+sleep 2
 
 echo -e "${GREEN}Sleep for Prometheus + Grafana pods ...${NC}"
 kubectl get pods -n monitoring -w &
 WATCH_PID=$!
-kubectl wait --for=condition=Ready --timeout=120s pod -l app.kubernetes.io/name=prometheus -n monitoring
+kubectl wait --for=condition=Ready --timeout=120s pod --all -n monitoring
 kill $WATCH_PID
 echo -e "\n"
+sleep 2
 
-echo -e "${GREEN}Thumbnail Processor OpenAPI Docs:${NC} http://localhost:8080/docs"
-echo -e "${GREEN}Metrics Exposure:${NC} http://localhost:8080/metrics"
+echo -e "${GREEN}Thumbnail Processor OpenAPI Docs:${NC} http://localhost:30080/docs"
+echo -e "${GREEN}Metrics Exposure:${NC} http://localhost:30080/metrics"
 echo -e "${GREEN}Prometheus:${NC} http://localhost:9090"
 echo -e "${GREEN}Grafana Dashboard:${NC} http://localhost:3000"
 echo "Username: admin"
@@ -53,8 +55,6 @@ echo -n "Password: "
 kubectl --namespace monitoring get secrets monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
 
 echo -e "${GREEN}\nStarting port forwarding ...${NC}"
-kubectl port-forward svc/thumbnail-proc 8080:8080 &
-KUBE_PID=("$!")
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80 &
 KUBE_PID+=("$!")
 kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090 &
@@ -68,8 +68,8 @@ shutdown() {
   kind delete cluster --name cogent || true
   exit 0
 }
-trap shutdown SIGINT SIGTERM
+trap shutdown SIGINT SIGTERM SIGSTOP SIGQUIT
 
-echo -e "${GREEN}Port forwarding running. Press Ctrl-C to stop and delete cluster.${NC}"
+echo -e "${GREEN}\nPort forwarding running. Press Ctrl-C to stop and delete cluster.${NC}"
 
 wait

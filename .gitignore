@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/helm,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=helm,python
-
+.DS_Store
+jobs.txt
 ### Helm ###
 # Chart dependencies
 **/charts/*.tgz
