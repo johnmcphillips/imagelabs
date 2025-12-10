@@ -3,14 +3,19 @@ set -e
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+ROOT="$(cd "$SCRIPT_DIR/.." &> /dev/null && pwd)"
+
 URL="http://localhost:30080/thumbnails"
-IMAGES=("./test/images/original/")
-THUMBNAILS=("./test/images/thumbnail/")
-JOBS=("./test/jobs.txt")
+IMAGES=("$ROOT/test/images/original/")
+THUMBNAILS=("$ROOT/test/images/thumbnail/")
+JOBS=("$ROOT/test/jobs.txt")
+mkdir -p "${THUMBNAILS}"
 touch "$JOBS"
 : > "$JOBS"
 
-MAX_JOBS=100
+# Take max jobs from execution. eg "./test.sh 50", default 10 jobs
+MAX_JOBS="${1:-10}"
 COUNT=0
 
 random_sleep() {
@@ -31,7 +36,7 @@ while (( COUNT < MAX_JOBS )); do
             -H "Accept: application/json" \
             -F "file=@${image}"
             )
-        echo "Response: $RESPONSE"
+        echo $RESPONSE
 
         JOB_ID=$(awk -F'"' '{print $4}' <<< "$RESPONSE")
         [ -z "$JOB_ID" ] && continue
@@ -39,10 +44,11 @@ while (( COUNT < MAX_JOBS )); do
 
         # Download image after POST
         echo -e "${GREEN}Downloading thumbnail: $JOB_ID ...${NC}"
-        curl $URL"/$JOB_ID" \
+        RESPONSE=$(curl $URL"/$JOB_ID" \
         -H "Accept: application/json" \
-        -o "${THUMBNAILS}/${JOB_ID}.jpg"
-
+        -o "${THUMBNAILS}/${JOB_ID}.jpg")
+        echo $RESPONSE
+        
         rm -f "${THUMBNAILS}/${JOB_ID}.jpg"  # Clean up
 
         sleep $(random_sleep)
