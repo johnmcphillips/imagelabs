@@ -2,7 +2,7 @@
 
 Thumbnail creation assignment
 
-A User submits an image to an API endpoint. \
+A user submits an image to an API endpoint. \
 The API will:
 
 - Save the original image
@@ -27,7 +27,7 @@ The user can:
 
 ## Reasoning
 
-This system is designed to simple, observable, and reliable. FastAPI handles requests, while Redis stores a central authority of job queues, supporting mulitple replicas. Prometheus and Grafana are integrated to expose throughput, latency, error rates, and pod health, without manual investigaiton. Automation scripts ensure the system is repeatable and easy to run for the end user.
+This system is designed to simple, observable, and reliable. FastAPI handles requests, while Redis stores a central authority of job queues, (potentially) supporting multiple replicas. Prometheus and Grafana are integrated to expose throughput, latency, error rates, and pod health, without manual investigation. Automation scripts ensure the system is repeatable and easy to run for the end user.
 
 ### Limitations and considerations
 
@@ -37,11 +37,11 @@ Since there is no PVC for replicas, the deployment will only run a single thumbn
 
 Due to complexity and overkill with running nginx or other ingress controllers, I decided to stick with NodePort for thumbnail pods (stability over kubectl port-forward:8080) and port-forwards for Prometheus and Grafana.
 
-Logging is centralized to a single /logs endpoint. Loki was attempted to ship logs to Grafana, but ran into complication on Kind compatability.
+Logging is centralized to a single /logs endpoint. Loki was attempted to ship logs to Grafana, but ran into complication on Kind compatibility.
 
 Test script runs a thumbnail POST > downloads generated thumbnail > deletes thumbnail. There is no ramping or distribution on this test.
 
-Many decisions were made to ensure compatability and simplicity for Cogent reviewers, while keeping a reliable system to demonstrate.
+Many decisions were made to ensure compatability and simplicity for Cogent reviewers, while keeping a reliable system to demonstrate. In a real cluster I would run shared elastic storage (EFS) and run multiple HPA enabled API pods behind an nginx ingress controller.
 
 ## Architecture
 
@@ -69,7 +69,7 @@ Helm installs, and optional load testing.
 
 - Installs the kube-prometheus-stack Chart
 
-- Waits for Pod availabitliy
+- Waits for Pod availability
 
 - Outputs Grafana admin credentials and service URLs
 
@@ -77,7 +77,7 @@ Helm installs, and optional load testing.
 
 - Cleans up the cluster on Ctrl-C
 
-- **Optionally:```--smoke-test``` ```num```(default 10 jobs)  will run test/test.sh and output results**
+- **Optionally:```--smoke-test``` ```[num]```(default 10 jobs)  will run test/test.sh and output results**
 
 ### Run without Automated Testing
 
