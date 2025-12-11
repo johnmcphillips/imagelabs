@@ -48,9 +48,9 @@ Many decisions were made to ensure compatability and simplicity for Cogent revie
 
 - FastAPI + background processing + Redis job store + Kubernetes + Prometheus/Grafana
 ![Architecture Diagram](docs/diagram.png)
-![Architecture Diagram](docs/dashboard.png)
-![Architecture Diagram](docs/apidocs.png)
-![Architecture Diagram](docs/logs.png)
+![Dashboard Diagram](docs/dashboard.png)
+![API Diagram](docs/apidocs.png)
+![Logs Diagram](docs/logs.png)
 
 ## Automated Setup
 
