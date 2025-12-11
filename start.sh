@@ -55,6 +55,7 @@ printf "\n"
 sleep 2
 
 printf "${GREEN}Thumbnail Processor OpenAPI Docs:${NC} http://localhost:30080/docs\n"
+printf "${GREEN}Thumbnail Processor Logs:${NC} http://localhost:30080/logs\n"
 printf "${GREEN}Metrics Exposure:${NC} http://localhost:30080/metrics\n"
 printf "${GREEN}Prometheus:${NC} http://localhost:9090\n"
 printf "${GREEN}Grafana Dashboard:${NC} http://localhost:3000\n"
