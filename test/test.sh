@@ -16,6 +16,7 @@ touch "$JOBS"
 
 # Take max jobs from execution. eg "./test.sh 50", default 10 jobs
 MAX_JOBS="${1:-10}"
+#MAX_JOBS=300
 COUNT=0
 
 random_sleep() {
@@ -48,7 +49,7 @@ while (( COUNT < MAX_JOBS )); do
         -H "Accept: application/json" \
         -o "${THUMBNAILS}/${JOB_ID}.jpg")
         echo $RESPONSE
-        
+
         rm -f "${THUMBNAILS}/${JOB_ID}.jpg"  # Clean up
 
         sleep $(random_sleep)
