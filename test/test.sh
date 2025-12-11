@@ -30,7 +30,7 @@ while (( COUNT < MAX_JOBS )); do
 
         [ -e $image ] || continue
 
-        echo -e "${GREEN}Processing image: $image ...${NC}"
+        printf "${GREEN}Processing image: $image ...${NC}"
         # POST image to process to thumbnail
         RESPONSE=$(
             curl -X POST $URL \
@@ -44,7 +44,7 @@ while (( COUNT < MAX_JOBS )); do
         echo "$JOB_ID" >> "$JOBS"
 
         # Download image after POST
-        echo -e "${GREEN}Downloading thumbnail: $JOB_ID ...${NC}"
+        printf "${GREEN}Downloading thumbnail: $JOB_ID ...${NC}"
         RESPONSE=$(curl $URL"/$JOB_ID" \
         -H "Accept: application/json" \
         -o "${THUMBNAILS}/${JOB_ID}.jpg")
