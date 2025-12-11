@@ -43,10 +43,10 @@ Test script runs a thumbnail POST > downloads generated thumbnail > deletes thum
 
 Many decisions were made to ensure compatability and simplicity for Cogent reviewers, while keeping a reliable system to demonstrate.
 
-
 ## Architecture
 
 - FastAPI + background processing + Redis job store + Kubernetes + Prometheus/Grafana
+
 ![Architecture Diagram](docs/diagram.png)
 ![Dashboard Diagram](docs/dashboard.png)
 ![API Diagram](docs/apidocs.png)
